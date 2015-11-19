@@ -49,6 +49,7 @@ struct TS_BUTTON {
 };
 
 #define TS_FBUTN 0x0001 // Frame Button
+#define TS_RBUTN 0x0003 // Rounded Button
 #define TS_SLIDE 0x0002 // Slide Button :: TBDone
 #define TS_FRAME  0x0010  // FRAME for two TOGGLE button areas
 #define TS_TOGOFF 0x0100  // Off Toggle
@@ -60,7 +61,7 @@ int TS_bCount = 0;  // Set at run time from sizeof()
 // -----------------------------------------
 //        { tx, ty, ww, hh, fgc, bgc, info, text[8], bId }    << Struct looks like this
 TS_BUTTON buttons[] = {
-  {10, 25, 100, 50, ILI9341_YELLOW, ILI9341_PINK, TS_FBUTN, "Redraw", 200 },
+  {10, 25, 100, 50, ILI9341_YELLOW, ILI9341_PINK, TS_RBUTN, "Redraw", 200 },
   {10, 80, 100, 50, ILI9341_BLACK, 0, TS_FRAME + 1, "???", 101 },
   {10, 80, 50, 50, ILI9341_RED, ILI9341_BLUE, TS_TOGON + 1, "ROT", 1 }, {60, 80, 50, 50, ILI9341_GREEN, ILI9341_BLUE, TS_TOGOFF + 1, "SIT", 51 },
   {10, 135, 100, 50, ILI9341_RED, 1, TS_FRAME + 2, "???", 102 },
@@ -216,8 +217,12 @@ void ButtonDraw( int16_t idBut ) {
   int ii = 0;
   while ( ii < TS_bCount ) {
     if ( !idBut || idBut == buttons[ii].bId ) {
-      if ( TS_TOGOFF & buttons[ii].info || TS_FBUTN == buttons[ii].info ) {
-        tft.fillRect(buttons[ii].tx, buttons[ii].ty, buttons[ii].ww, buttons[ii].hh, buttons[ii].bgc);
+      if ( TS_TOGOFF & buttons[ii].info || TS_FBUTN == buttons[ii].info || TS_RBUTN == buttons[ii].info ) {
+        if (TS_RBUTN == buttons[ii].info) {
+          tft.fillRoundRect(buttons[ii].tx, buttons[ii].ty, buttons[ii].ww, buttons[ii].hh,buttons[ii].hh/2, buttons[ii].bgc);
+        }
+        else
+          tft.fillRect(buttons[ii].tx, buttons[ii].ty, buttons[ii].ww, buttons[ii].hh, buttons[ii].bgc);
         tft.setCursor(buttons[ii].tx + 6, buttons[ii].ty + (buttons[ii].hh / 3));
         tft.setTextColor(buttons[ii].fgc);  // BUGBUG - Same color as Frame?
         tft.setTextSize(2);  // BUGBUG - this to come from struct!
