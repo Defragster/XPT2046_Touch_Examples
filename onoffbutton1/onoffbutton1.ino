@@ -246,7 +246,7 @@ int ButtonHit( int16_t xx, uint16_t yy, int16_t &bHit ) {
 
   while ( ii < TS_bCount ) {
     if  ( (xx >= buttons[ii].tx && xx <= buttons[ii].tx + buttons[ii].ww) && (yy >= buttons[ii].ty && yy <= buttons[ii].ty + buttons[ii].hh)) {
-      if ( TS_FBUTN == buttons[ii].info ) {
+      if ( TS_FBUTN == buttons[ii].info || TS_RBUTN == buttons[ii].info ) {
         // THIS IS A single FRAMED BUTTON - handle button with idTog = -1 && iiOn = -1
         idTog = (buttons[ii].info & TS_TOGMASK);
         bHit =  buttons[ii].bId;
