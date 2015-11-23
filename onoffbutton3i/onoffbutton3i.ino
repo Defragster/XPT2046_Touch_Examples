@@ -12,11 +12,9 @@
 volatile static byte isrWake = 0; // This cascades a few more Touch POLL reads after no touch before enable interrupt
 #define TS_INTWAIT  0
 #define TS_INTACTIVE  1
-#define TS_INTBUSY  2
-#define TS_INTRETRY  3
-static TS_Point TS_pp;
+
 // -----  TS_ IRQ DATA END ------
-uint16_t TS_usVal = 25000; // POLL rate from the timer interrupt on Touch Detect
+uint16_t TS_usVal = 50000; // POLL rate from the timer interrupt on Touch Detect [max 65K]
 #define TIRQ_PIN  2
 
 #define CS_PIN 8
@@ -93,6 +91,7 @@ void setup(void)
   else Serial.println("Touchscreen started.");
   ButtonInit();
   TS_iBegin( TIRQ_PIN, TS_usVal );
+  //  TS_iBegin( -1 , TS_usVal ); // TIMER ONLY
 }
 
 void loop()
@@ -184,7 +183,7 @@ void loop()
     }
     if (xout) { // on screen fireworks on button press
       cc[cii] += 1; // Show extra char below for each processed button touch
-      if ( cc[cii] > 11 ) {
+      if ( cc[cii] > 13 ) {
         cc[cii] = 1;
         Serial.println();
         tft.fillRect(xout, yout, 100, 10, ILI9341_BLACK);
@@ -193,7 +192,7 @@ void loop()
       tft.setTextColor(ILI9341_WHITE);
       tft.setTextSize(1);
       tft.print(bValue); // Shows BUTTON ID received on screen
-      for ( int ii = 0; ii <= cc[cii]; ii++) tft.print("|"); // Added char for each unbounced button touch
+      for ( int ii = 1; ii < cc[cii]; ii++) tft.print("|"); // Added char for each unbounced button touch
       tft.print("."); // dot is new on end - | shows change from each prior touch
       if ( lastbValue != bValue ) {
         tft.fillRect(10, 220, 20, 10, ILI9341_BLACK);
@@ -344,6 +343,12 @@ void  ButtonRotate( int setrotate )
   tft.setRotation(TS_Rotate);
   tft.fillScreen(ILI9341_BLUE);
   ButtonDraw( 0 );
+  tft.fillRect(10, 220, 20, 10, ILI9341_BLACK);
+  tft.setTextSize(1);
+  tft.setCursor(100, 220);
+  tft.print("Rotate="); // Shows BUTTON ID received on screen
+  tft.print(TS_Rotate); // Shows BUTTON ID received on screen
+
 }
 
 void ButtonInit( void )
@@ -362,75 +367,47 @@ void ButtonInit( void )
 // -----------------------------------------
 void TS_iBegin( int16_t PinInt, uint16_t usVal )
 {
-  if ( usVal ) {
-    Timer1.initialize( usVal);
-    Timer1.attachInterrupt( TS_isrTime ); // Touch Test 'POLL' on Timer interrupt
-  }
   if ( PinInt >= 0 ) {
     pinMode( PinInt, INPUT );
     attachInterrupt( PinInt, TS_isrPin, FALLING );
+  }
+  else if ( usVal ) {
+    Timer1.initialize( usVal);
+    Timer1.attachInterrupt( TS_isrTime ); // Touch Test 'POLL' on Timer interrupt
   }
 }
 
 void TS_isrTime( void )
 {
   isrWake = TS_INTACTIVE;
-  return;
 }
 
 void TS_isrPin( void )
 {
-  if ( TS_usVal ) { // When first TOUCH_INT recorded turn off the timer polling
-    TS_usVal = 0;
-    Timer1.stop();
-    Timer1.detachInterrupt();
-    Serial.println( "TIMER:isrOff" );
-  }
   if ( TS_INTWAIT == isrWake )
     isrWake = TS_INTACTIVE;
-  return;
 }
 
 bool TS_itouched() {
   bool iftouched;
-  if ( TS_INTWAIT == isrWake ) {
+  if ( TS_INTWAIT == isrWake )
     return false;
-  }
-  else if ( TS_INTACTIVE == isrWake )
-    isrWake = TS_INTBUSY;
   iftouched = ts.touched();
-  if ( !iftouched ) {
-    if ( TS_INTBUSY == isrWake )
-      isrWake = TS_INTRETRY;
-    else if ( TS_INTRETRY == isrWake )
-      isrWake = TS_INTWAIT;
-  }
-  else if ( TS_INTRETRY == isrWake ) {
-    isrWake = TS_INTBUSY;
-  }
+  if ( !iftouched )
+    isrWake = TS_INTWAIT;
   return iftouched;
 }
 
-
 TS_Point TS_igetPoint() {
+  static TS_Point TS_pp;
   if ( TS_INTWAIT == isrWake )
     return TS_Point(0, 0, 0);
-  else if ( TS_INTACTIVE == isrWake )
-    isrWake = TS_INTBUSY;
   TS_pp = ts.getPoint();
-  if ( !TS_pp.z )
-  {
-    if ( TS_INTBUSY == isrWake )
-      isrWake = TS_INTRETRY;
-    else if ( TS_INTRETRY == isrWake )
-      isrWake = TS_INTWAIT;
-  }
-  else if ( TS_INTRETRY == isrWake ) {
-    isrWake = TS_INTBUSY;
-  }
+  if ( 0 == TS_pp.z )
+    isrWake = TS_INTWAIT;
+
   return ts.getPoint();
 }
-
 // -----------------------------------------
 // --- Touch interrupt Code ends here
 // -----------------------------------------
