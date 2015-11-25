@@ -7,13 +7,6 @@
 #include <ILI9341_t3.h>
 #include <XPT2046_Touchscreen.h>
 
-// -----  TS_ IRQ DATA START ------
-#include <TimerOne.h>
-volatile static byte isrWake = 0; // This cascades a few more Touch POLL reads after no touch before enable interrupt
-#define TS_INTWAIT  0
-#define TS_INTACTIVE  1
-
-// -----  TS_ IRQ DATA END ------
 uint16_t TS_usVal = 50000; // POLL rate from the timer interrupt on Touch Detect [max 65K]
 #define TIRQ_PIN  2
 
@@ -362,6 +355,12 @@ void ButtonInit( void )
 // -----------------------------------------
 
 
+// -----  TS_ IRQ DATA START ------
+#include <TimerOne.h>
+volatile static byte isrWake = 0; // This cascades a few more Touch POLL reads after no touch before enable interrupt
+#define TS_INTWAIT  0
+#define TS_INTACTIVE  1
+// -----  TS_ IRQ DATA END ------
 // -----------------------------------------
 // --- Touch interrupt Code Starts here
 // -----------------------------------------
