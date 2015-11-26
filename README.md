@@ -6,6 +6,8 @@ The examples here develop a uniform structured way to implement and handle TOUCH
 Additionally there is an interrupt aware XPT2046_Touchscreen library UPDATE to to TeensyDuino 1.26 released:
   \hardware\teensy\avr\libraries\XPT2046_Touchscreen
 
+PJRC took the pull into the tree for what should be TeensyDuino 1.27 when released
+
 You can update these files there for testing or copy that directory to you personal Sketches\library folder
 Then put these changed files over the source files copied to preserve the originals:
   user\libraries\XPT2046_Touchscreen
