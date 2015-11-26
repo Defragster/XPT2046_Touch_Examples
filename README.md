@@ -14,3 +14,5 @@ Then put these changed files over the source files copied to preserve the origin
   
   If you change out the library code this sample allows it to be used specifying the Touch int pin:
   onoffbutton4_Pull  "Button Touch ready to use interrupt aware XPT2046_Touchscreen library"
+
+Too many mixed samples here - it was an evolving project - started buttons - started in sketch interrupts - moved interrupt code to core library - if you are looking start with the later examples. Any code that doesn't have attachInterrupt in will work with the old code without int pin - or with the updated library when it compiles withthe pin specified. If it has the sketch based interrupt code it won't work with the libray version. Once I get the button code finalized with expected updates I'll clean this mess up - hopefully before TeensyDuino ships the interrupt aware version. Feedback or questions at: https://forum.pjrc.com/threads/31634-ILI9341-and-XPT2046-for-Teensy-Touchscreen-320x240-display
