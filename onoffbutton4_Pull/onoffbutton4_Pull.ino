@@ -4,22 +4,35 @@
 // Button Animation :: ButtonDraw( bValue, [special color, or animate type???]  );
 #include <SPI.h>
 #include <Wire.h>
+
+
+
+//#define LC 1
+
+#if LC
+#include "Adafruit_ILI9341.h"
+#else
 #include <ILI9341_t3.h>
+#endif
 #include <XPT2046_Touchscreen.h>
 
 
 #define CS_PIN 8
-XPT2046_Touchscreen ts(CS_PIN);  // Param 2 - NULL - No interrupts
+//XPT2046_Touchscreen ts(CS_PIN);  // Param 2 - NULL - No interrupts
 // Second PARAM on XPT2046_Touchscreen requires modified interrupt aware XPT2046_Touchscreen library
 #define TIRQ_PIN  2
 //XPT2046_Touchscreen ts(CS_PIN, 255);  // Param 2 - 255 - No interrupts
-//XPT2046_Touchscreen ts(CS_PIN, TIRQ_PIN);  // Param 2 - Touch IRQ Pin - interrupt enabled polling
+XPT2046_Touchscreen ts(CS_PIN, TIRQ_PIN);  // Param 2 - Touch IRQ Pin - interrupt enabled polling
 // Second PARAM on XPT2046_Touchscreen requires modified interrupt aware XPT2046_Touchscreen library
 
 #define TFT_CS 10
 #define TFT_DC  9
 // MOSI=11, MISO=12, SCK=13
+#ifdef LC
+Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
+#else
 ILI9341_t3 tft = ILI9341_t3(TFT_CS, TFT_DC);
+#endif
 
 // -----------------------------------------
 // --- Button Data Starts here
@@ -50,6 +63,14 @@ struct TS_BUTTON {
   byte bId; // Button ID
   uint8_t data; // Toggle FRAME stores state value here
 };
+
+#if LC
+// ADAFRUIT MISSING COLORS
+#define ILI9341_NAVY        0x000F      /*   0,   0, 128 */
+#define ILI9341_DARKCYAN    0x03EF      /*   0, 128, 128 */
+#define ILI9341_ORANGE      0xFD20      /* 255, 165,   0 */
+#define ILI9341_PINK        0xF81F
+#endif
 
 #define TS_JITTER 250 // ms Threshold for Toggle/Slider re-activate
 #define TS_FBUTN 0x01 // Frame Button
@@ -134,7 +155,7 @@ void loop()
         cii = 3;
         Serial.print("\nCyan btn hit");
         tft.fillScreen(ILI9341_BLUE); // clear screen
-        for (int ii=0; ii<7; ii++) cc[ii] = 0; // CLear :: cc[7] = {0, 0, 0, 0, 0, 0, 0};
+        for (int ii = 0; ii < 7; ii++) cc[ii] = 0; // CLear :: cc[7] = {0, 0, 0, 0, 0, 0, 0};
         ButtonDraw( 0 );
         yout = 190, xout = 115;
         break;
@@ -351,7 +372,6 @@ void ButtonInit( void )
   TS_bCount = sizeof( buttons) / sizeof( TS_BUTTON);
   ButtonRotate( TS_Rotate );
 }
-
 // -----------------------------------------
 // --- Button Code Ends here
 // -----------------------------------------
