@@ -43,15 +43,10 @@ int16_t TS_Rotate = 1;
 static int16_t TS_iiSlide = -1;
 #define TS_SLIDET 40  // Reject SLIDE buttons farther apart than this
 
-struct TS_MAP {
-  int16_t xt;
-  int16_t xb;
-  int16_t yl;
-  int16_t yr;
-};
+struct TS_MAP {int16_t xt; int16_t xb; int16_t yl; int16_t yr; };
 // Zero is calibration for mapping to pixel, 1-4 follow screen rotation for mapping math
 TS_MAP tsMap[5] = { {200, 3700, 325, 3670 }, { 0, 319, 0, 239 }, { 319, 0, 0, 239 }, { 319, 0, 239, 0 }, { 0, 319, 239, 0 } };
-int16_t TS_xMax = 0;
+int16_t TS_xMax = 0;  // These TS_ values are updated per current rotation to xMax and yMax
 int16_t TS_yMax = 0;
 
 struct TS_BUTTON {
@@ -83,18 +78,6 @@ int TS_bCount = 0;  // Set at run time from sizeof()
 // --- USER Button Data Starts here
 // -----------------------------------------
 //        { tx, ty, ww, hh, fgc, bgc, btype, info, text[8], bId, data }    << Struct looks like this
-TS_BUTTON xbuttons[] = {
-  {10, 25, 100, 50, ILI9341_YELLOW, ILI9341_PINK, TS_RBUTN, 0, "Redraw", 200, 0 },
-  {10, 80, 100, 50, ILI9341_BLACK, ILI9341_BLACK, TS_FRAME, 1, "???", 101, 1 },
-  {10, 80, 50, 50, ILI9341_RED, ILI9341_BLUE, TS_TOGON, 1, "ROT", 1 , 0}, {60, 80, 50, 50, ILI9341_GREEN, ILI9341_BLUE, TS_TOGOFF , 1, "SIT", 51, 0 },
-  {10, 135, 100, 50, ILI9341_RED, ILI9341_BLACK, TS_FRAME, 2, "???", 102, 1 },
-  {60, 135, 50, 50, ILI9341_ORANGE, ILI9341_BLACK, TS_ASLIDE, 2, "Sl.A", 2, 0 }, {10, 135, 50, 50, ILI9341_CYAN, ILI9341_BLACK, TS_BSLIDE, 2, "Sl.B", 52, 0 },
-  {115, 25, 50, 105, ILI9341_YELLOW, ILI9341_BLACK, TS_FRAME, 3, "???", 103, 1 },
-  {115, 25, 50, 55, ILI9341_CYAN, ILI9341_BLACK, TS_TOGOFF, 3, "Clr", 3, 0 }, {115, 80, 50, 50, ILI9341_CYAN, ILI9341_NAVY, TS_TOGON, 3, "Hi!", 53, 0 },
-  {165, 25, 50, 105, ILI9341_CYAN, ILI9341_PINK, TS_FBUTN, 0, "Dbo", 201, 0 },
-  {115, 135, 100, 50, ILI9341_BLACK, ILI9341_DARKCYAN, TS_FBUTN, 0, "BOUNCE", 202, 0 },
-};
-
 TS_BUTTON buttons[] = {{15, 5, 50, 50, 65535, 15, TS_FBUTN, 0, "1", 1, 0} ,
   {75, 5, 50, 50, 65535, 992, TS_FBUTN, 0, "2", 2, 0} ,
   {135, 5, 50, 50, 65535, 1007, TS_FBUTN, 0, "3", 3, 0} ,
@@ -395,13 +378,4 @@ void ShowBStruct( uint16_t tx, uint16_t ty, uint16_t ww, uint16_t hh, uint16_t f
   Serial.print( data );
   Serial.print( "}" );
 };
-
-
-/* Debug on screen show rotation
-  tft.fillRect(10, 220, 20, 10, ILI9341_BLACK);
-  tft.setTextSize(1);
-  tft.setCursor(100, 220);
-  tft.print("Rotate="); // Shows BUTTON ID received on screen
-  tft.print(TS_Rotate); // Shows BUTTON ID received on screen
-*/
 
