@@ -16,6 +16,7 @@
 #endif
 #include <XPT2046_Touchscreen.h>
 
+
 #define CS_PIN 8
 //XPT2046_Touchscreen ts(CS_PIN);  // Param 2 - NULL - No interrupts
 // Second PARAM on XPT2046_Touchscreen requires modified interrupt aware XPT2046_Touchscreen library
@@ -29,11 +30,6 @@ XPT2046_Touchscreen ts(CS_PIN, TIRQ_PIN);  // Param 2 - Touch IRQ Pin - interrup
 // MOSI=11, MISO=12, SCK=13
 #ifdef LC
 Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
-// ADAFRUIT MISSING COLORS
-#define ILI9341_NAVY        0x000F      /*   0,   0, 128 */
-#define ILI9341_DARKCYAN    0x03EF      /*   0, 128, 128 */
-#define ILI9341_ORANGE      0xFD20      /* 255, 165,   0 */
-#define ILI9341_PINK        0xF81F
 #else
 ILI9341_t3 tft = ILI9341_t3(TFT_CS, TFT_DC);
 #endif
@@ -61,15 +57,20 @@ struct TS_BUTTON {
   uint16_t bgc; // background color button or empty frame
   uint8_t btype;  // for toggle/slider two bytes TYPE & info PAIRING number
   uint8_t info;  // for toggle/slider two bytes TYPE & info PAIRING number
-  //  char *text; // May need large text!  Do union {text[8] || flag,char*} allow user call to set flag to '\1' unprintable to say use char*
-  char text[10]; // May need large text!  Do union {text[8] || flag,char*} allow user call to set flag to '\1' unprintable to say use char*
+  char text[8]; // May need large text!  Do union {text[8] || flag,char*} allow user call to set flag to '\1' unprintable to say use char*
   // Add font color :: FONT MATCHES FRAME
   // Add byte font size
   byte bId; // Button ID
   uint8_t data; // Toggle FRAME stores state value here
 };
-char *calf[] = { (char*)"123", (char*)"abcxyz" };
 
+#if LC
+// ADAFRUIT MISSING COLORS
+#define ILI9341_NAVY        0x000F      /*   0,   0, 128 */
+#define ILI9341_DARKCYAN    0x03EF      /*   0, 128, 128 */
+#define ILI9341_ORANGE      0xFD20      /* 255, 165,   0 */
+#define ILI9341_PINK        0xF81F
+#endif
 
 #define TS_JITTER 250 // ms Threshold for Toggle/Slider re-activate
 #define TS_FBUTN 0x01 // Frame Button
@@ -107,9 +108,6 @@ void setup(void)
   if (!ts.begin()) Serial.println("Unable to start touchscreen.");
   else Serial.println("Touchscreen started.");
   ButtonInit();
-  Serial.println(sizeof calf);
-  Serial.println(calf[0]);
-  Serial.println(calf[1]);
 }
 
 void loop()
@@ -373,10 +371,6 @@ void ButtonInit( void )
 {
   TS_bCount = sizeof( buttons) / sizeof( TS_BUTTON);
   ButtonRotate( TS_Rotate );
-  Serial.print( "Buttons Size =" );
-  Serial.println( sizeof( buttons) );
-  Serial.println( TS_bCount );
-  Serial.println( sizeof( TS_BUTTON) );
 }
 // -----------------------------------------
 // --- Button Code Ends here
