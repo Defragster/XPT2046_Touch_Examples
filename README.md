@@ -20,3 +20,18 @@ Then put these changed files over the source files copied to preserve the origin
 Purged older samples here - it was an evolving project - started buttons - started in sketch interrupts - moved interrupt code to core library - if you are looking start with the later examples. Any code that doesn't have attachInterrupt in will work with the old code without int pin - or with the updated library when it compiles withthe pin specified. If it has the sketch based interrupt code it won't work with the libray version. Once I get the button code finalized with expected updates I'll clean this mess up - hopefully before TeensyDuino ships the interrupt aware version. Feedback or questions at: https://forum.pjrc.com/threads/31634-ILI9341-and-XPT2046-for-Teensy-Touchscreen-320x240-display.
 
 If you get a compile error on "XPT2046_Touchscreen ts(CS_PIN, TIRQ_PIN);" you don't have the interrupt aware code, comment that line and remove comment from the other line: //XPT2046_Touchscreen ts(CS_PIN);  // Param 2 - NULL - No interrupts and TeensyDuino version 1.26 libs
+
+These samples ran for me as I tested them swapping in this code:
+#define LC 1 // comment out to use ILI9341_t3
+
+#if LC
+#include "Adafruit_ILI9341.h"
+#else
+#include <ILI9341_t3.h>
+#endif
+
+#ifdef LC
+Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
+#else
+ILI9341_t3 tft = ILI9341_t3(TFT_CS, TFT_DC);
+#endif
