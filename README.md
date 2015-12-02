@@ -21,17 +21,3 @@ Purged older samples here - it was an evolving project - started buttons - start
 
 If you get a compile error on "XPT2046_Touchscreen ts(CS_PIN, TIRQ_PIN);" you don't have the interrupt aware code, comment that line and remove comment from the other line: //XPT2046_Touchscreen ts(CS_PIN);  // Param 2 - NULL - No interrupts and TeensyDuino version 1.26 libs
 
-These samples ran for me as I tested them swapping in this code:
-#define LC 1 // comment out to use ILI9341_t3
-
-#if LC
-#include "Adafruit_ILI9341.h"
-#else
-#include <ILI9341_t3.h>
-#endif
-
-#ifdef LC
-Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
-#else
-ILI9341_t3 tft = ILI9341_t3(TFT_CS, TFT_DC);
-#endif
