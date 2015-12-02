@@ -21,3 +21,4 @@ Purged older samples here - it was an evolving project - started buttons - start
 
 If you get a compile error on "XPT2046_Touchscreen ts(CS_PIN, TIRQ_PIN);" you don't have the interrupt aware code, comment that line and remove comment from the other line: //XPT2046_Touchscreen ts(CS_PIN);  // Param 2 - NULL - No interrupts and TeensyDuino version 1.26 libs
 
+To use on Teensy LC needed IFDEF or alternate code shown here: https://forum.pjrc.com/threads/31867-Color-Touchscreen-and-LC?p=89858&viewfull=1#post89858
