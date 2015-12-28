@@ -1,10 +1,10 @@
 #include <SPI.h>
 #include <Wire.h>
+#include "ButtonMap.h"
+#include "ColorButtonsMark3.h"
 
 #include <ILI9341_t3.h>
 #include <XPT2046_Touchscreen.h>
-#include "ButtonMap.h"
-#include "ColorButtonsMark3.h"
 
 #define CS_PIN 8
 //XPT2046_Touchscreen ts(CS_PIN);  // Param 2 - NULL - No interrupts and TeensyDuino version 1.26 libs
@@ -81,12 +81,6 @@ void loop()
         ButtonInit( &mybuttons4[0] );
         Serial.print("\nButtonInit( &mybuttons4[0] );");
         tft.fillScreen(ILI9341_ORANGE);
-        ButtonDraw( 0 );
-      }
-      if ( 5 == bValue ) {
-        ButtonInit( &mybuttons1[0] );
-        Serial.print("\nButtonInit( &mybuttons4[0] );");
-        tft.fillScreen(ILI9341_BLUE);
         ButtonDraw( 0 );
       }
     }

@@ -7,7 +7,11 @@
 // 0: Allow pushbutton/event input to tie to buttons?
 // 0: Grayed Button
 // 0: User defined text areas for display or edit of text?
-// 0: Sentinal button could give 'window' constraints to allow selective redraw when it exits?
+// 0: Sentinel button could give 'window' constraints to allow selective redraw when it exits?
+//
+// 0: Slider control color picker sketch
+// 0: 
+// 0: Screen layout design sketch - ( using push buttons? )
 //
 // 0: TAG wide verus narrow button  1%3 or 2,4 allow moved placement on rotation
 // 0: Button Animation :: ButtonDraw( bValue, [special color, or animate type???]  );

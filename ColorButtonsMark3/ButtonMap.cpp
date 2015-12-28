@@ -29,11 +29,11 @@ TS_BUTTON *TS_pbtn = TS_NoButton;
 
 // Zero is calibration for mapping to pixel, 1-4 follow screen rotation for mapping math
 TS_MAP tsMap[5] = { {200, 3700, 325, 3670 }, { 0, 319, 0, 239 }, { 319, 0, 0, 239 }, { 319, 0, 239, 0 }, { 0, 319, 239, 0 } };
-int16_t TS_Rotate = 1;
 int16_t TS_xMax = 0; // Current Screen orientation x,y Max values
 int16_t TS_yMax = 0;
 
 int TS_bCount = 0;  // Set at run time from sizeof()
+int16_t TS_Rotate = 1;
 static int16_t TS_iiSlide = -1;
 
 boolean TS_GetMap( int16_t &xx, int16_t &yy, boolean twoHits )
@@ -190,7 +190,6 @@ void ButtonInit( TS_BUTTON *userbuttons )
     ButtonRotate( TS_Rotate );
   }
   else TS_pbtn = userbuttons;
-  if ( !TS_xMax || !TS_yMax)ButtonRotate( TS_Rotate );
   TS_bCount = 0;
   while ( -1 != TS_pbtn[TS_bCount].tx ) {
     TS_bCount++;
