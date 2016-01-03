@@ -1,5 +1,5 @@
 # XPT2046_Touch_Examples
-Examples using the Teensy XPT_Touchscreen
+Examples using the Teensy XPT2046_Touchscreen
 
 MARK3 examples are the latest.  ButtonCode moved to separate file.  Button mapping struct evolved. Stored the Mapping Data in 'sketch'.h header file so it isn't always in the way.
 
